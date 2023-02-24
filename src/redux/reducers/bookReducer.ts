@@ -1,7 +1,7 @@
+import { actionType } from '../../utils/types'
 
 
-
-const initialState = [
+const initialState: any[] = [
     {
         isbn: '12345',
         author: 'JK Rowling',
@@ -14,7 +14,7 @@ const initialState = [
     }
 ]
 
-export const booksReducer = ( state = initialState, { type, payload } ) => {
+export const booksReducer = ( state = initialState, { type, payload }:  actionType) => {
     switch (type) {
         case '':
             
