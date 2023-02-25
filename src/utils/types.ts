@@ -1,16 +1,27 @@
-export type book = {
+export type BookType = {
     isbn: string
     author: string
     title: string
+    previousIsbn?: string
 }
 
-export type booksStateObj = {
+/* export type BooksStateObj = {
     loading: boolean
-    data?: book[]
+    data?: BookType[]
     error?: string
+} */
+
+export type ActionType = {
+    type: string
+    payload: BookType
 }
 
-export type actionType = {
-    type: string
-    payload: book
-}
+export interface BooksState {
+    loading: boolean;
+    data: BookType[];
+    error?: string | undefined;
+  }
+
+export interface StoreState {
+    books: BooksState
+  }
