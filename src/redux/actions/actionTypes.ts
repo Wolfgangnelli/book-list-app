@@ -1,1 +1,3 @@
-export const test = ""
+export const ADD_BOOK_REQUEST = "ADD_BOOK_REQUEST"
+export const ADD_BOOK_SUCCESS = "ADD_BOOK_SUCCESS"
+export const ADD_BOOK_FAIL = "ADD_BOOK_FAIL"
