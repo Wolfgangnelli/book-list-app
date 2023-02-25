@@ -6,5 +6,5 @@ export type book = {
 
 export type actionType = {
     type: string
-    payload: book | book[]
+    payload: book
 }
