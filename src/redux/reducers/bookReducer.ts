@@ -1,21 +1,23 @@
 import { actionType, book } from '../../utils/types'
-import { ADD_BOOK_SUCCESS, ADD_BOOK_FAIL, ADD_BOOK_REQUEST } from '../actions/actionTypes'
+import { 
+    ADD_BOOK_SUCCESS, 
+    ADD_BOOK_FAIL, 
+    ADD_BOOK_REQUEST,
+    GET_BOOK_REQUEST,
+    GET_BOOK_SUCCESS,
+    GET_BOOK_FAIL,
+    DELETE_BOOKS_REQUEST, 
+    DELETE_BOOKS_SUCCESS, 
+    DELETE_BOOKS_FAIL 
+} from '../actions/actionTypes'
 
 
-const initialState: book[] = [
-/*     {
-        isbn: '12345',
-        author: 'JK Rowling',
-        title: 'Harry Potter',
-    },
-    {
-        isbn: '67890',
-        author: 'Imran Khan',
-        title: 'Personal History',
-    } */
-]
+const initialState: any = {
+    data: []
+}
 
 export const booksReducer = ( state = initialState, { type, payload }:  actionType) => {
+ 
     switch (type) {
         case ADD_BOOK_REQUEST:
             return {
@@ -23,21 +25,57 @@ export const booksReducer = ( state = initialState, { type, payload }:  actionTy
                 ...state
             }
         case ADD_BOOK_SUCCESS:
-            let existBook = state.find(book => book.isbn === payload.isbn)
+            let existBook = state?.data?.find((book: book) => book.isbn === payload.isbn)
 
             if(existBook) {
                 return {
                     ...state,
-                    books: state.map(book => book.isbn === existBook?.isbn ? payload : book)
+                    data: state.map((book: book) => book.isbn === existBook?.isbn ? payload : book)
                 }
-            } else {
+            } else { 
                 return {
                     loading: false,
-                    books: [...state, payload]
+                    data: [...state.data, payload]
                 }
-            }
+            } 
 
         case ADD_BOOK_FAIL:
+            return {
+                loading: false,
+                error: payload
+            }
+
+        case GET_BOOK_REQUEST:
+            return {
+                loading: true,
+                ...state
+            }
+
+        case GET_BOOK_SUCCESS:
+            return {
+                loading: false,
+                data: payload
+            }
+
+        case GET_BOOK_FAIL:
+            return {
+                loading: false,
+                error: payload
+            }
+
+        case DELETE_BOOKS_REQUEST:
+            return {
+                loading: true,
+                ...state
+            }
+
+        case DELETE_BOOKS_SUCCESS:
+            return {
+                loading: false,
+                data: []
+            }
+
+        case DELETE_BOOKS_FAIL:
             return {
                 loading: false,
                 error: payload

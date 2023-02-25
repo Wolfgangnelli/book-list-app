@@ -1,23 +1,33 @@
-import { ADD_BOOK_REQUEST, ADD_BOOK_SUCCESS, ADD_BOOK_FAIL } from './actionTypes'
+import { 
+    ADD_BOOK_REQUEST, 
+    ADD_BOOK_SUCCESS, 
+    ADD_BOOK_FAIL, 
+    GET_BOOK_REQUEST, 
+    GET_BOOK_SUCCESS, 
+    GET_BOOK_FAIL,
+    DELETE_BOOKS_REQUEST,
+    DELETE_BOOKS_SUCCESS,
+    DELETE_BOOKS_FAIL,
+} from './actionTypes'
 import { book } from '../../utils/types'
 import fs from '../../config/firebase'
-import { addDoc, collection } from 'firebase/firestore'
+import { addDoc, collection, deleteDoc, doc, getDocs } from 'firebase/firestore'
 
-interface AddBook {
+interface IBook {
     type: string
     payload?: any 
 }
 
-type DispatchAddBook = (arg: AddBook) => (AddBook)
+type DispatchBook = (arg: IBook) => (IBook)
 
-export const addBook = (book: book) => async (dispatch: DispatchAddBook) => {
+export const addBook = (book: book) => async (dispatch: DispatchBook) => {
 
     try {
         dispatch({
             type: ADD_BOOK_REQUEST,
         });
 
-        const bookRef = await addDoc(collection(fs, 'books'), {
+        await addDoc(collection(fs, 'books'), {
             isbn: book.isbn,
             author: book.author,
             title: book.title
@@ -25,7 +35,7 @@ export const addBook = (book: book) => async (dispatch: DispatchAddBook) => {
 
         dispatch({
             type: ADD_BOOK_SUCCESS,
-            payload: bookRef
+            payload: book
         })
         
     } catch (error: any) {
@@ -33,7 +43,61 @@ export const addBook = (book: book) => async (dispatch: DispatchAddBook) => {
             type: ADD_BOOK_FAIL,
             payload: error
         })
-        
     }
+}
 
+export const getBooks = () => async (dispatch: DispatchBook) => {
+    try {
+        dispatch({
+            type: GET_BOOK_REQUEST
+        })
+
+        const queryBooks = await getDocs(collection(fs, 'books'))
+ 
+        if(queryBooks.docs.length > 0) {
+            const booksArray: any[] = []
+
+            queryBooks.forEach((book) => {
+                booksArray.push(book.data())
+            })
+    
+            dispatch({
+                type: GET_BOOK_SUCCESS,
+                payload: booksArray
+            })
+        }
+       
+        
+    } catch (error: any) {
+        dispatch({
+            type: GET_BOOK_FAIL,
+            payload: error
+        })
+    }
+}
+
+export const deleteBooks = () => async (dispatch: DispatchBook) => {
+    try {
+        dispatch({
+            type: DELETE_BOOKS_REQUEST
+        })
+
+        const queryBooks = await getDocs(collection(fs, 'books'))
+
+        if(queryBooks.docs.length > 0) {
+            for (const book of queryBooks.docs) {
+                await deleteDoc(doc(fs, 'books', book.id))
+            }
+
+            dispatch({
+                type: DELETE_BOOKS_SUCCESS
+            })
+        }
+        
+    } catch (error: any) {
+        dispatch({
+            type: DELETE_BOOKS_FAIL,
+            payload: error
+        })
+    }
 }

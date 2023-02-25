@@ -1,22 +1,26 @@
 import React from 'react'
-import { book } from '../../utils/types'
+import { booksStateObj } from '../../utils/types'
 import {Card, Row, Col} from 'react-bootstrap'
 
 interface Props {
-    books: book[]
+    books: booksStateObj
 }
 
 const Books = (props: Props) => {
 
-    const { books } = props
+    const { books: { data, loading, error } } = props
 
-    if(!!books?.length === false) {
+    if(!!data?.length === false) {
         return <div>No books founs!</div>
     }
 
-  return books ? (
+  return loading ? (
+    <p>Loading...</p>
+  ) : error ? (
+    <p>{error}</p>
+  ) : data ? (
     <ul className="list-unstyled">
-      {books.map(book => (
+      {data.map(book => (
         <li key={book.isbn} className="my-2">
             <Card>
               <Card.Body>
